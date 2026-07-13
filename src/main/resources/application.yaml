@@ -5,12 +5,16 @@ spring:
     bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
       acks: all
-      retries: 3
+      retries: 1
       properties:
         linger.ms: 10
         batch.size: 32768
+        request.timeout.ms: 5000
+        delivery.timeout.ms: 10000
+        max.block.ms: 5000
+        retry.backoff.ms: 1000
     topic:
       name: library-events
       partitions: 3
@@ -40,3 +44,5 @@ logging:
 kafka:
   topic:
     name: library-events
+  producer:
+    publish-timeout-seconds: 5

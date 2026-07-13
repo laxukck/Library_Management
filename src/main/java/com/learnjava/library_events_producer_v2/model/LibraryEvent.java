@@ -1,5 +1,9 @@
 package com.learnjava.library_events_producer_v2.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.learnjava.library_events_producer_v2.serialization.LocalDateTimeJsonDeserializer;
+import com.learnjava.library_events_producer_v2.serialization.LocalDateTimeJsonSerializer;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.Valid;
@@ -29,6 +33,8 @@ public class LibraryEvent {
     @Valid
     private Book book;
 
+    @JsonSerialize(using = LocalDateTimeJsonSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeJsonDeserializer.class)
     private LocalDateTime timestamp;
 
     private String status;

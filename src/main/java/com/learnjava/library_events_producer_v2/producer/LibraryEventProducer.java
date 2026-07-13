@@ -12,6 +12,8 @@ import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Kafka producer for publishing library events to Kafka topic.
@@ -26,6 +28,9 @@ public class LibraryEventProducer {
 
     @Value("${kafka.topic.name:library-events}")
     private String topicName;
+
+    @Value("${kafka.producer.publish-timeout-seconds:5}")
+    private long publishTimeoutSeconds;
 
     @Autowired
     public LibraryEventProducer(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper) {
@@ -100,7 +105,7 @@ public class LibraryEventProducer {
                     .setHeader("kafka_messageKey", eventKey)
                     .build();
 
-            var sendResult = kafkaTemplate.send(message).get();
+            var sendResult = kafkaTemplate.send(message).get(publishTimeoutSeconds, TimeUnit.SECONDS);
 
             log.info("Successfully published library event (SYNC) with ID: {} to partition: {} with offset: {}",
                     libraryEvent.getLibraryEventId(),
@@ -109,6 +114,15 @@ public class LibraryEventProducer {
 
             libraryEvent.setStatus("PUBLISHED");
 
+        } catch (TimeoutException ex) {
+            log.error("Timed out after {} seconds while publishing library event with ID: {}. Kafka may be unavailable.",
+                    publishTimeoutSeconds, libraryEvent.getLibraryEventId(), ex);
+            libraryEvent.setStatus("FAILED");
+            throw new IllegalStateException(
+                    "Kafka broker is unavailable or not reachable at the configured bootstrap server. " +
+                            "Please start Kafka and retry.",
+                    ex
+            );
         } catch (Exception ex) {
             log.error("Error publishing library event (SYNC): {}", ex.getMessage(), ex);
             libraryEvent.setStatus("FAILED");
