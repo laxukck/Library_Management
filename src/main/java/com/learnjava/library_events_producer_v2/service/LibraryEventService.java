@@ -33,13 +33,15 @@ public class LibraryEventService {
      * @throws LibraryEventException if creation fails
      */
     public LibraryEvent createLibraryEvent(LibraryEvent libraryEvent) {
+        EventType type = libraryEvent.getEventType();
+
         log.info("Creating new library event with ID: {} and event type: {}",
-                libraryEvent.getLibraryEventId(), libraryEvent.getEventType());
+                libraryEvent.getLibraryEventId(), type);
 
         try {
             // Validate event type
-            if (libraryEvent.getEventType() != EventType.ADD &&
-                libraryEvent.getEventType() != EventType.UPDATE) {
+            if (type != EventType.ADD &&
+                type != EventType.UPDATE) {
                 throw new LibraryEventException(
                         "Invalid event type. Must be ADD or UPDATE",
                         "INVALID_REQUEST"
@@ -47,7 +49,7 @@ public class LibraryEventService {
             }
 
             // For ADD events, ensure event type is correctly set
-            if (libraryEvent.getEventType() == null) {
+            if (type == null) {
                 throw new LibraryEventException(
                         "Event type is required",
                         "INVALID_REQUEST"
@@ -87,8 +89,9 @@ public class LibraryEventService {
      * @throws LibraryEventException if update fails or event not found
      */
     public LibraryEvent updateLibraryEvent(Long libraryEventId, LibraryEvent libraryEvent) {
+        EventType type = libraryEvent.getEventType();
         log.info("Updating library event with ID: {} and event type: {}",
-                libraryEventId, libraryEvent.getEventType());
+                libraryEventId, type);
 
         try {
             // Validate that the ID in URL matches the request body
@@ -100,15 +103,15 @@ public class LibraryEventService {
             }
 
             // Validate event type
-            if (libraryEvent.getEventType() == null) {
+            if (type == null) {
                 throw new LibraryEventException(
                         "Event type is required for update",
                         "INVALID_REQUEST"
                 );
             }
 
-            if (libraryEvent.getEventType() != EventType.ADD &&
-                libraryEvent.getEventType() != EventType.UPDATE) {
+            if (type != EventType.ADD &&
+                type != EventType.UPDATE) {
                 throw new LibraryEventException(
                         "Invalid event type. Must be ADD or UPDATE",
                         "INVALID_REQUEST"
