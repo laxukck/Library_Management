@@ -1,8 +1,20 @@
 spring:
   application:
     name: library-events-producer-v2
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/library_events}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    open-in-view: false
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -15,20 +27,9 @@ spring:
         delivery.timeout.ms: 10000
         max.block.ms: 5000
         retry.backoff.ms: 1000
-    topic:
-      name: library-events
-      partitions: 3
-      replication-factor: 1
-
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-
-  h2:
-    console:
-      enabled: true
 
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /
 
@@ -43,6 +44,8 @@ logging:
 
 kafka:
   topic:
-    name: library-events
+    name: ${KAFKA_TOPIC_NAME:library-events}
+    partitions: 3
+    replication-factor: 1
   producer:
-    publish-timeout-seconds: 5
+    publish-timeout-seconds: ${KAFKA_PRODUCER_PUBLISH_TIMEOUT_SECONDS:5}

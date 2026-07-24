@@ -92,6 +92,7 @@ library-events-producer-v2/
 ├── build.gradle (Gradle build configuration)
 ├── gradlew (Gradle wrapper)
 ├── IMPLEMENTATION_PLAN.md (Implementation plan document)
+├── POSTGRESQL_IMPLEMENTATION_PLAN.md (PostgreSQL migration and persistence plan)
 └── docs/
     └── PRD.md (Product Requirements Document)
 ```
@@ -569,6 +570,7 @@ logging:
 
 - [Product Requirements Document](docs/PRD.md)
 - [Implementation Plan](IMPLEMENTATION_PLAN.md)
+- [PostgreSQL Implementation Plan](POSTGRESQL_IMPLEMENTATION_PLAN.md)
 - [Spring Boot Documentation](https://spring.io/projects/spring-boot)
 - [Spring Kafka Documentation](https://spring.io/projects/spring-kafka)
 - [Apache Kafka Documentation](https://kafka.apache.org/documentation/)

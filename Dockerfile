@@ -2,13 +2,18 @@ FROM eclipse-temurin:25-jdk AS build
 
 WORKDIR /workspace
 
+# 1. Copy only Gradle files first (cache dependencies)
 COPY gradlew build.gradle settings.gradle ./
 COPY gradle gradle
-
 RUN chmod +x gradlew
 
+# 2. Download dependencies (cached layer)
+RUN ./gradlew --no-daemon dependencies
+
+# 3. Copy source AFTER dependencies are cached
 COPY src src
 
+# 4. Build the jar
 RUN ./gradlew --no-daemon clean bootJar
 
 FROM eclipse-temurin:25-jre
