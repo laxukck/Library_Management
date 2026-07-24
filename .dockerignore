@@ -1,0 +1,13 @@
+.git
+.gradle
+.idea
+build
+out
+target
+*.iml
+*.ipr
+*.iws
+compose.yaml
+docs
+HELP.md
+
